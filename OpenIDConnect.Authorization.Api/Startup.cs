@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace OpenIDConnect.Authorization.Api
-{
+{    
     using Data.UsersApi.Repositories;
     using Microsoft.Data.Entity;
 
@@ -70,7 +70,7 @@ namespace OpenIDConnect.Authorization.Api
             app.UseCors("AllowAllOrigins");         // TODO: allow collection of allowed origins per client
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseMvc();            
         }
 
         // Entry point for the application.

@@ -1,0 +1,57 @@
+﻿@{
+    Layout = null;
+    var token = Model.AntiForgery;
+}
+<!DOCTYPE html>
+<html ng-app="CustomView" ng-controller="MainController as ctrl">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@Model.SiteName</title>
+    <link rel="stylesheet" href="/CustomView/Styles/CustomViewStyles.css" />
+    <script src="/CustomView/Scripts/angular.js"></script>
+</head>
+<body lang="en">
+    <div >
+       
+        <ul>
+            <li >
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Model.CurrentUser </a>
+                <ul class="dropdown-menu">
+                    <li><a href="@Model.LogoutUrl">Logout</a></li>
+                    @if(@Model.LoginWithDifferentAccountUrl)
+                    { 
+                        <li class="divider" ></li>
+                        <li><a href="@Model.LoginWithDifferentAccountUrl" >Login With Different Account</a></li>
+                    }
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div >
+        <div >
+            <h1>This is the Logout page.</h1>
+            <p>Please don't leave, @Model.CurrentUser</p>
+        </div>
+    </div>
+
+    <div  ng-cloak>
+        
+        <div >
+            <div >
+                <p>Would you like to logout of @Model.SiteName ?</p>
+                <form name="form" method="post" action="@Model.LogoutUrl">
+                    @*Anti-forgery token*@
+                    <input type='hidden' name='@token.Name' value='@token.Value'>
+                    <fieldset>
+                        <div class="form-group">
+                            <button class="btn btn-primary">Yes</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+   
+</body>
+</html>
+

@@ -1,0 +1,409 @@
+#%RAML 0.8
+title: User and Access Management API - a single API for the Single Sign On solution to manage users and user claims
+version: 1
+baseUri: https://localhost:53677
+protocols: [HTTPS]
+mediaType: application/json
+/users:
+  get:
+    description: Gets a specified number of users using paging
+    queryParameters:
+      pageStart:
+        displayName: PageStart
+        type: integer
+        description: The first item to retrieve
+        required: true
+        minimum: 1
+      pageSize:
+        displayName: PageSize
+        type: integer
+        description: The number of items to retrieve
+        required: true
+        minimum: 1
+        maximum: 100
+    responses:
+      200:
+        body:
+          example: |
+            {
+            "items":[
+            		{								"id": "8bf84292-2ba7-4605-a77c-054a55b64085",	
+            	"email": "example@example.com",				
+            				"forename": "...",
+            								"surname": "...",
+            								"location": "...",	
+            							"accountName": "companyName"							},
+            							{								"id": "8bf84292-2ba7-4605-a77c-054a55b64086",							
+            	"email": "test@test.com",
+            								"forename": "...",
+            								"surname": "...",								
+            "location": "...",
+            								"accountName": "otherCompany"							
+            }							],
+            						"paging": [
+            "currentPage": 1,
+            "pageSize": 25,
+            "itemsOnPage": 10,
+            "totalPages":2,
+            "totalItems":18
+            ]}
+      400:
+        description: There was a problem with the requested parameters
+      
+  post:
+    description: Creates a new user. Optionally claims may be supplied
+    responses:
+      201: 
+        description: New user created successfully
+        headers:
+          location:
+            description: Absolute uri of the created user
+            type: string
+            required: true
+            example: <<baseUri>>/users/{userId}
+      400:
+      422:
+        body:
+          example: |
+            {
+            "errorMessage": "There were validation errors with the supplied data",
+            "errorContent": [
+            {
+            "fieldName": "email",
+            "message": "supplied value was not a valid email address"
+            }
+            ]}
+      500:
+        body:
+          example: |
+            {
+            "errorMessage": "The user could not be created"
+            }
+  /{userId}:
+    get:
+      description: Gets a specific user using their unique Id and their claims
+      responses:
+        200:
+          body:
+            example: |
+              {
+              "id": "8bf84292-2ba7-4605-a77c-054a55b64085",								
+              "email": "example@example.com",								
+              "forename": "...",
+              								"surname": "...",								
+              "location": "...",								
+              "accountName": "bigCompany",								
+              "claims": [{											
+                "id": "8bf84292-2ba7-4605-a77c-054a55b64087",
+                "type": "forename",
+              											  "value": "john"										  },
+              										  {											
+                "id": "8bf84292-2ba7-4605-a77c-054a55b64088",
+                "type": "surname",											
+                "value": "smith"										  
+                }]
+              }
+        404:
+          description: No user was found matching the supplied Id
+    put:
+      description: Updates a user with the values supplied
+      body:
+            example: |
+              {
+              "id": "8bf84292-2ba7-4605-a77c-054a55b64094"
+              }
+      responses:
+        204:
+          description: The user was successfully updated
+        400:
+        422:
+          body:
+            example: |
+              {
+              "errorMessage": "There were validation errors with the supplied data",
+              "errorContent": [
+              {
+              "fieldName": "email",
+              "message": "supplied value was not a valid email address"
+              }
+              ]}
+        500:
+          body:
+            example: |
+              {
+              "errorMessage": "The user could not be updated"
+              }
+    /authenticate:
+      post:
+        description: Authenticates the user
+        body:
+          example: |
+            {
+            							"email": "...",
+            							"password": "..."
+            						}   
+        responses:
+          200:
+            description: User is authenticated
+          400:
+            description: User is not authenticated
+          422:
+            body:
+              example: |
+                {
+                "errorMessage": "There were validation errors with the supplied data",
+                "errorContent": [
+                {
+                "fieldName": "email",
+                "message": "supplied value was not a valid email address"
+                }
+                ]}
+          500:
+            body:
+              example: |
+                {
+                "errorMessage": "There was a problem authenticating the user"
+                }
+    /deactivate:
+      post:
+        description: Marks a user as deleted. They can no longer sign-in.
+        responses:
+          204:
+            description: The user has been successfully deactivated
+          404:
+            description: The user was not found
+          500:
+            body:
+              example: |
+                {
+                "errorMessage": "There was a problem deactivating the user"
+                }
+    /restore:
+      post:
+        description: Restores a deleted user.
+        responses: 
+          200:
+            description: The user has been successfully restored
+            body:
+              example: |
+                {
+                "id": "8bf84292-2ba7-4605-a77c-054a55b64089"
+                }
+          404:
+            description: The user could not be found
+          500:
+            body:
+              example: |
+                {
+                "errorMessage": "There was a problem restoring the user"
+                }
+    /claims:
+      get:
+        description: Gets the user's claims
+        queryParameters:
+          claimTypes:
+            displayName: ClaimTypes
+            type: string
+            required: false
+            description: Comma separated list of claim types to filter the claims by
+        responses:
+          200:
+            description: Claims for a specific user
+            body:
+              example: |
+                {
+                  "claims": [
+                  {
+                  "id": "8bf84292-2ba7-4605-a77c-054a55b64090",
+                									  "type": "forename",									
+                  "value": "john"								
+                  },								
+                  {									
+                  "id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+                  "type": "surname",
+                  		"value": "smith"								}],
+                  								"total": 5
+                }
+          400:
+          404:
+            description: The user could not be found
+          500:
+            body:
+              example: |
+                {
+                "errorMessage": "There was a problem retrieving the claims"
+                }
+      post:
+        description: Adds a new claim to the user
+        responses:
+          201:
+            description: The claim was successfully added to the user.
+            headers:
+              location:
+                description: Relative URL of the created claim
+                type: string
+                required: true
+                example: /users/{userId}/claims/{claimId}
+          404:
+            description: The requested user could not be found
+          422:
+            body:
+              example: |
+                {
+                "errorMessage": "There were validation errors with the supplied data",
+                "errorContent": [
+                {
+                "fieldName": "value",
+                "message": "supplied value was not valid"
+                }
+                ]}
+          500:
+            body:
+              example: |
+                {
+                "errorMessage": "There was a problem adding the claim"
+                }
+      put:
+        description: Updates the claims of a specified type for a user.
+        queryParameters:
+          claimTypes:
+            displayName: ClaimTypes
+            type: string
+            required: true
+            description: The claim type to update
+        body:
+            example: |
+              {
+              "id": "8bf84292-2ba7-4605-a77c-054a55b64093"
+              }
+        responses:
+          200:
+            description: The claims have been successfully updated.
+            body:
+              example: |
+                {
+                "claims": [{
+                  									"id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+                  "type": "forename",
+                  		"value": "john"								
+                  								},								
+                  {
+                 "id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+                  "type": "surname",
+                  		"value": "smith"								
+                  								}],								
+                  "total": 2
+                }
+          400:
+          404:
+          422:
+            body:
+              example: |
+                {
+                "errorMessage": "There were validation errors with the supplied data",
+                "errorContent": [
+                {
+                "fieldName": "type",
+                "message": "supplied value was not valid"
+                }
+                ]}
+          500:
+            body:
+              example: |
+                {
+                "errorMessage": "There was a problem updating the claim"
+                }
+      delete:
+        description: Removes all claims of a specified type.
+        queryParameters:
+          claimTypes:
+            displayName: ClaimTypes
+            type: string
+            required: true
+            description: The claim type to update
+        responses:
+          204:
+            description: The claim(s) have been successfully removed
+          500:
+            body:
+              example: |
+                {
+                "errorMessage": "There was a problem deleting the claim"
+                }
+      /{claim}:
+        get:
+          description: Get a specific claim using the unique id
+          responses:
+            200:
+              description: The requested claim
+              body:
+                example: |
+                  {
+                  "id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+                  "type": "surname",
+                  		"value": "smith"								
+                  }
+            404:
+              description: The claim was not found
+            500:
+              body:
+                example: |
+                  {
+                  "errorMessage": "There was a retrieving updating the claim"
+                  }
+        put:
+          description: Update the value of this claim. The id is provided in the body
+          body:
+            example: |
+              {
+              "id": "8bf84292-2ba7-4605-a77c-054a55b64092"
+              }
+          responses:
+            200:
+              description: The claims have been successfully updated.
+              body:
+                example: |
+                  {
+                  "id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+                  "type": "surname",
+                  		"value": "smith"								
+                  }
+            404:
+            400:
+            422:
+              body:
+                example: |
+                  {
+                  "errorMessage": "There were validation errors with the supplied data",
+                  "errorContent": [
+                  {
+                  "fieldName": "type",
+                  "message": "supplied value was not valid"
+                  }
+                  ]}
+            500:
+              body:
+                example: |
+                  {
+                  "errorMessage": "There was a problem updating the claim"
+                  }
+        delete:
+          description: Remove the specific claim using the unique id
+          responses:
+            204:
+              description: The claim was successfully deleted
+            404:
+              description: The claim was not found
+            500:
+              body:
+                example: |
+                  {
+                  "errorMessage": "There was a problem deleting the claim"
+                  }
+            
+            
+              
+              
+        
+      
+      

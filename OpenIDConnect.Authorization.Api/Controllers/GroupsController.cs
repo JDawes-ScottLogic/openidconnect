@@ -106,10 +106,10 @@ namespace OpenIDConnect.Authorization.Api.Controllers
             var result = await this.clientUsersRepository.GetUsers(clientId, groupId, new Paging(paging.Page, paging.PageSize));
 
             var userApiModels = new PagingResultApiModel<UserApiModel>
-                {
-                    Items = result.Items.Select(u => UserApiModel.FromDomain(u)),
-                    Paging = PageDetailsApiModel.FromDomain(result.Paging)
-                };
+            {
+                Items = result.Items.Select(u => UserApiModel.FromDomain(u)),
+                Paging = PageDetailsApiModel.FromDomain(result.Paging)
+            };
 
             return this.Ok(userApiModels);
         }
@@ -145,3 +145,5 @@ namespace OpenIDConnect.Authorization.Api.Controllers
 
     }
 }
+
+

@@ -1,0 +1,79 @@
+﻿@{
+    Layout = null;
+    var token = Model.AntiForgery;
+}
+
+<!DOCTYPE html>
+<html ng-app="CustomView" ng-model="razorModel">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@Model.ClientName</title>
+    <link rel="stylesheet" href="/CustomView/Styles/CustomViewStyles.css" />
+    <script src="/RazorCustomView/Scripts/angular.js"></script>
+
+</head>
+<body lang="en">
+    <div>
+        <div>
+            <span>@Model.ClientName</span>
+
+        </div>
+    </div>
+    <div>
+        <div>
+            <h1>This is a custom view of the Login screen</h1>
+        </div>
+    </div>
+
+    <div>
+        <div>
+            <h1>Login / Sign In</h1>
+        </div>
+        <div>
+            <div>
+              
+              
+                <p>Would you like to sign in to @Model.ClientName ?</p>
+                <form name="form" method="post" action="@Model.LoginUrl">
+                    @*Anti-forgery token*@
+                    <input type='hidden' name='@token.Name' value='@token.Value'>
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input required name="username" autofocus id="username" type="text" class="form-control" placeholder="Username" ng-model="model.username" maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input required id="password" name="password" type="password" class="form-control" placeholder="Password" ng-model="model.password" maxlength="100" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" ng-disabled="form.$invalid">Login</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+        @if (Model.ExternalProviders != null)
+        {
+  
+            <div>
+                <div>
+                    <h3>External Login</h3>
+                </div>
+                <div>
+                    <ul>
+                        @foreach (var p in Model.ExternalProviders)
+                        {
+                        <li >
+                            <a href="@p.Href">@p.Text</a>
+                        </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+ </body>
+</html>
+
