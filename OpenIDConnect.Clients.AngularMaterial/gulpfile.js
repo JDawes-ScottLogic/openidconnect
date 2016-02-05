@@ -53,4 +53,4 @@ gulp.task('js:watch', function(){
 
 gulp.task('watch', ['sass:watch', 'js:watch', 'html:watch']);
 
-gulp.task('default', ['sass', 'html', 'js'])
+gulp.task('default', ['sass', 'html', 'js', 'watch'])
