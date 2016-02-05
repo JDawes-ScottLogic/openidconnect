@@ -1,10 +1,8 @@
 'use strict';
 
 var gulp = require('gulp');
-var sass = require('gulp-sass');
-var cssnano = require('gulp-cssnano');
+var $ = require('gulp-load-plugins')();
 var del = require('del');
-var flatten = require('gulp-flatten');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 
@@ -23,9 +21,9 @@ gulp.task('clean', function () {
 
 gulp.task('sass', function(){
     return gulp.src(sassFiles)
-        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-        .pipe(cssnano())
-        .pipe(flatten())
+        .pipe($.sass({outputStyle: 'compressed'}).on('error', $.sass.logError))
+        .pipe($.cssnano())
+        .pipe($.flatten())
         .pipe(gulp.dest(cssOutputFolder));
 });
 
