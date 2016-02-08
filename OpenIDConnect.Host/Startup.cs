@@ -21,6 +21,9 @@ namespace OpenIDConnect.Host
                 .WriteTo.Trace()
                 .CreateLogger();
 
+            //LogProvider.SetCurrentLogProvider(new DiagnosticsTraceLogProvider());
+            LogProvider.SetCurrentLogProvider(new DiagnosticsTraceLogProvider());
+
             var builder = new ContainerBuilder();
 
             Modules.Register(builder);

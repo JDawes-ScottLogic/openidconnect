@@ -14,7 +14,7 @@ namespace OpenIDConnect.Clients.Angular14.Controllers
         public IHttpActionResult GetNews()
         {
             var newsArticles = GetArticles(this.User.IsInRole("Premium"));
-            return this.Ok(newsArticles);
+            return this.Ok(newsArticles.ToList());
         }
 
         private IEnumerable<NewsArticleApiModel> GetArticles(bool includePremium)
