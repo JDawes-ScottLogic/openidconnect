@@ -11,8 +11,10 @@
                     <md-chips ng-model="cartoon.species" placeholder="Add tag" delete-button-label="Remove">
                     </md-chips>
                 </div>
+
             </div>
         </md-list-item>
+        <div ng-repeat="character in ctrl.characters track by $index"></div>
     </md-list>
 </md-content>
 

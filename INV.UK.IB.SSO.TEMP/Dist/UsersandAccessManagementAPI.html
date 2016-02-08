@@ -1,0 +1,319 @@
+<!DOCTYPE HTML><html><head><title>User and Access Management API - a single API for the Single Sign On solution to manage users and user claims API documentation</title><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="generator" content="https://github.com/kevinrenskers/raml2html 1.6.0"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"><link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css"><script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script><script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script><script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {
+            $('.page-header pre code, .top-resource-description pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+            });
+
+            $('[data-toggle]').click(function() {
+                var selector = $(this).data('target') + ' pre code';
+                $(selector).each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+            
+            
+            // open modal on hashes like #_action_get
+            $(window).bind('hashchange', function(e) {
+                var anchor_id = document.location.hash.substr(1); //strip #
+                var element = $('#' + anchor_id);
+
+                // do we have such element + is it a modal?  --> show it
+                if (element.length && element.hasClass('modal')) {
+                    element.modal('show');
+                }
+            });
+
+            // execute hashchange on first page load
+            $(window).trigger('hashchange');
+            
+            // remove url fragment on modal hide
+            $('.modal').on('hidden.bs.modal', function() {
+                if(history && history.replaceState) { 
+                    history.replaceState({}, '', '#');
+                }
+            });
+        });
+    </script><style>
+        .hljs {
+            background: transparent;
+        }
+        .parent {
+            color: #999;
+        }
+        .list-group-item > .badge {
+            float: none;
+            margin-right: 6px;
+        }
+        .panel-title > .methods {
+            float: right;
+        }
+        .badge {
+            border-radius: 0;
+            text-transform: uppercase;
+            width: 70px;
+            font-weight: normal;
+            color: #f3f3f6;
+            line-height: normal;
+        }
+        .badge_get {
+            background-color: #63a8e2;
+        }
+        .badge_post {
+            background-color: #6cbd7d;
+        }
+        .badge_put {
+            background-color: #22bac4;
+        }
+        .badge_delete {
+            background-color: #d26460;
+        }
+        .badge_patch {
+            background-color: #ccc444;
+        }
+        .list-group, .panel-group {
+            margin-bottom: 0;
+        }
+        .panel-group .panel+.panel-white {
+            margin-top: 0;
+        }
+        .panel-group .panel-white {
+            border-bottom: 1px solid #F5F5F5;
+            border-radius: 0;
+        }
+        .panel-white:last-child {
+            border-bottom-color: white;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+        .panel-white .panel-heading {
+            background: white;
+        }
+        .tab-pane ul {
+            padding-left: 2em;
+        }
+        .tab-pane h2 {
+            font-size: 1.2em;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-pane h3 {
+            font-size: 1.1em;
+        }
+        .tab-content {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        #sidebar {
+            margin-top: 30px;
+            padding-right: 5px;
+            overflow: auto;
+            height: 90%;
+        }
+        .top-resource-description {
+            border-bottom: 1px solid #ddd;
+            background: #fcfcfc;
+            padding: 15px 15px 0 15px;
+            margin: -15px -15px 10px -15px;
+        }
+        .resource-description {
+            border-bottom: 1px solid #fcfcfc;
+            background: #fcfcfc;
+            padding: 15px 15px 0 15px;
+            margin: -15px -15px 10px -15px;
+        }
+        .resource-description p:last-child {
+            margin: 0;
+        }
+        .list-group .badge {
+            float: left;
+        }
+        .method_description {
+            margin-left: 85px;
+        }
+        .method_description p:last-child {
+            margin: 0;
+        }
+        .list-group-item {
+            cursor: pointer;
+        }
+        .list-group-item:hover {
+            background-color: #f5f5f5;
+        }
+    </style></head><body data-spy="scroll" data-target="#sidebar"><div class="container"><div class="row"><div class="col-md-9" role="main"><div class="page-header"><h1>User and Access Management API - a single API for the Single Sign On solution to manage users and user claims API documentation <small>version 1</small></h1><p>https://localhost:53677</p></div><div class="panel panel-default"><div class="panel-heading"><h3 id="_users" class="panel-title">/users</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__users"><span class="parent"></span>/users</a> <span class="methods"><a href="#_users_get"><span class="badge badge_get">get</span></a> <a href="#_users_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel__users" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#_users_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Gets a specified number of users using paging</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#_users_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Creates a new user. Optionally claims may be supplied</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent"></span>/users</h4></div><div class="modal-body"><div class="alert alert-info"><p>Gets a specified number of users using paging</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users_get_request" data-toggle="tab">Request</a></li><li><a href="#_users_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users_get_request"><h3>Query Parameters</h3><ul><li><strong>PageStart</strong>: <em>required (integer - minimum: 1 )</em><p>The first item to retrieve</p></li><li><strong>PageSize</strong>: <em>required (integer - minimum: 1 - maximum: 100)</em><p>The number of items to retrieve</p></li></ul></div><div class="tab-pane" id="_users_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"items":[
+		{								"id": "8bf84292-2ba7-4605-a77c-054a55b64085",	
+	"email": "example@example.com",				
+				"forename": "...",
+								"surname": "...",
+								"location": "...",	
+							"accountName": "companyName"							},
+							{								"id": "8bf84292-2ba7-4605-a77c-054a55b64086",							
+	"email": "test@test.com",
+								"forename": "...",
+								"surname": "...",								
+"location": "...",
+								"accountName": "otherCompany"							
+}							],
+						"paging": [
+"currentPage": 1,
+"pageSize": 25,
+"itemsOnPage": 10,
+"totalPages":2,
+"totalItems":18
+]}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><p>There was a problem with the requested parameters</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent"></span>/users</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates a new user. Optionally claims may be supplied</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><p>New user created successfully</p><h3>Headers</h3><ul><li><strong>location</strong>: <em>required (string )</em><p>Absolute uri of the created user</p><p><strong>Example</strong>:</p><pre>&lt;&lt;baseUri&gt;&gt;/users/{userId}</pre></li></ul><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h2>HTTP status code <a href="http://httpstatus.es/422" target="_blank">422</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There were validation errors with the supplied data",
+"errorContent": [
+{
+"fieldName": "email",
+"message": "supplied value was not a valid email address"
+}
+]}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "The user could not be created"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__users__userId_"><span class="parent">/users</span>/{userId}</a> <span class="methods"><a href="#_users__userId__get"><span class="badge badge_get">get</span></a> <a href="#_users__userId__put"><span class="badge badge_put">put</span></a></span></h4></div><div id="panel__users__userId_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#_users__userId__get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Gets a specific user using their unique Id and their claims</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#_users__userId__put'" class="list-group-item"><span class="badge badge_put">put</span><div class="method_description"><p>Updates a user with the values supplied</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/users</span>/{userId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Gets a specific user using their unique Id and their claims</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__get_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__get_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul></div><div class="tab-pane" id="_users__userId__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"id": "8bf84292-2ba7-4605-a77c-054a55b64085",								
+"email": "example@example.com",								
+"forename": "...",
+								"surname": "...",								
+"location": "...",								
+"accountName": "bigCompany",								
+"claims": [{											
+  "id": "8bf84292-2ba7-4605-a77c-054a55b64087",
+  "type": "forename",
+											  "value": "john"										  },
+										  {											
+  "id": "8bf84292-2ba7-4605-a77c-054a55b64088",
+  "type": "surname",											
+  "value": "smith"										  
+  }]
+}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>No user was found matching the supplied Id</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put</span> <span class="parent">/users</span>/{userId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates a user with the values supplied</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__put_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__put_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"id": "8bf84292-2ba7-4605-a77c-054a55b64094"
+}
+</code></pre></div><div class="tab-pane" id="_users__userId__put_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>The user was successfully updated</p><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h2>HTTP status code <a href="http://httpstatus.es/422" target="_blank">422</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There were validation errors with the supplied data",
+"errorContent": [
+{
+"fieldName": "email",
+"message": "supplied value was not a valid email address"
+}
+]}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "The user could not be updated"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__users__userId__authenticate"><span class="parent">/users/{userId}</span>/authenticate</a> <span class="methods"><a href="#_users__userId__authenticate_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel__users__userId__authenticate" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#_users__userId__authenticate_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Authenticates the user</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__authenticate_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/users/{userId}</span>/authenticate</h4></div><div class="modal-body"><div class="alert alert-info"><p>Authenticates the user</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__authenticate_post_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__authenticate_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__authenticate_post_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+							"email": "...",
+							"password": "..."
+						}   
+</code></pre></div><div class="tab-pane" id="_users__userId__authenticate_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>User is authenticated</p><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><p>User is not authenticated</p><h2>HTTP status code <a href="http://httpstatus.es/422" target="_blank">422</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There were validation errors with the supplied data",
+"errorContent": [
+{
+"fieldName": "email",
+"message": "supplied value was not a valid email address"
+}
+]}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem authenticating the user"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__users__userId__deactivate"><span class="parent">/users/{userId}</span>/deactivate</a> <span class="methods"><a href="#_users__userId__deactivate_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel__users__userId__deactivate" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#_users__userId__deactivate_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Marks a user as deleted. They can no longer sign-in.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__deactivate_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/users/{userId}</span>/deactivate</h4></div><div class="modal-body"><div class="alert alert-info"><p>Marks a user as deleted. They can no longer sign-in.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__deactivate_post_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__deactivate_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__deactivate_post_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul></div><div class="tab-pane" id="_users__userId__deactivate_post_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>The user has been successfully deactivated</p><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>The user was not found</p><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem deactivating the user"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__users__userId__restore"><span class="parent">/users/{userId}</span>/restore</a> <span class="methods"><a href="#_users__userId__restore_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel__users__userId__restore" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#_users__userId__restore_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Restores a deleted user.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__restore_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/users/{userId}</span>/restore</h4></div><div class="modal-body"><div class="alert alert-info"><p>Restores a deleted user.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__restore_post_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__restore_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__restore_post_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul></div><div class="tab-pane" id="_users__userId__restore_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>The user has been successfully restored</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"id": "8bf84292-2ba7-4605-a77c-054a55b64089"
+}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>The user could not be found</p><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem restoring the user"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__users__userId__claims"><span class="parent">/users/{userId}</span>/claims</a> <span class="methods"><a href="#_users__userId__claims_get"><span class="badge badge_get">get</span></a> <a href="#_users__userId__claims_post"><span class="badge badge_post">post</span></a> <a href="#_users__userId__claims_put"><span class="badge badge_put">put</span></a> <a href="#_users__userId__claims_delete"><span class="badge badge_delete">delete</span></a></span></h4></div><div id="panel__users__userId__claims" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#_users__userId__claims_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Gets the user&#39;s claims</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#_users__userId__claims_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Adds a new claim to the user</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#_users__userId__claims_put'" class="list-group-item"><span class="badge badge_put">put</span><div class="method_description"><p>Updates the claims of a specified type for a user.</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#_users__userId__claims_delete'" class="list-group-item"><span class="badge badge_delete">delete</span><div class="method_description"><p>Removes all claims of a specified type.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__claims_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/users/{userId}</span>/claims</h4></div><div class="modal-body"><div class="alert alert-info"><p>Gets the user&#39;s claims</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__claims_get_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__claims_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__claims_get_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul><h3>Query Parameters</h3><ul><li><strong>ClaimTypes</strong>: <em>(string )</em><p>Comma separated list of claim types to filter the claims by</p></li></ul></div><div class="tab-pane" id="_users__userId__claims_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Claims for a specific user</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+  "claims": [
+  {
+  "id": "8bf84292-2ba7-4605-a77c-054a55b64090",
+									  "type": "forename",									
+  "value": "john"								
+  },								
+  {									
+  "id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+  "type": "surname",
+  		"value": "smith"								}],
+  								"total": 5
+}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>The user could not be found</p><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem retrieving the claims"
+}
+</code></pre></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__claims_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/users/{userId}</span>/claims</h4></div><div class="modal-body"><div class="alert alert-info"><p>Adds a new claim to the user</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__claims_post_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__claims_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__claims_post_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul></div><div class="tab-pane" id="_users__userId__claims_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><p>The claim was successfully added to the user.</p><h3>Headers</h3><ul><li><strong>location</strong>: <em>required (string )</em><p>Relative URL of the created claim</p><p><strong>Example</strong>:</p><pre>/users/{userId}/claims/{claimId}</pre></li></ul><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>The requested user could not be found</p><h2>HTTP status code <a href="http://httpstatus.es/422" target="_blank">422</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There were validation errors with the supplied data",
+"errorContent": [
+{
+"fieldName": "value",
+"message": "supplied value was not valid"
+}
+]}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem adding the claim"
+}
+</code></pre></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__claims_put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put</span> <span class="parent">/users/{userId}</span>/claims</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the claims of a specified type for a user.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__claims_put_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__claims_put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__claims_put_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul><h3>Query Parameters</h3><ul><li><strong>ClaimTypes</strong>: <em>required (string )</em><p>The claim type to update</p></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"id": "8bf84292-2ba7-4605-a77c-054a55b64093"
+}
+</code></pre></div><div class="tab-pane" id="_users__userId__claims_put_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>The claims have been successfully updated.</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"claims": [{
+  									"id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+  "type": "forename",
+  		"value": "john"								
+  								},								
+  {
+ "id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+  "type": "surname",
+  		"value": "smith"								
+  								}],								
+  "total": 2
+}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><h2>HTTP status code <a href="http://httpstatus.es/422" target="_blank">422</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There were validation errors with the supplied data",
+"errorContent": [
+{
+"fieldName": "type",
+"message": "supplied value was not valid"
+}
+]}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem updating the claim"
+}
+</code></pre></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__claims_delete"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_delete">delete</span> <span class="parent">/users/{userId}</span>/claims</h4></div><div class="modal-body"><div class="alert alert-info"><p>Removes all claims of a specified type.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__claims_delete_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__claims_delete_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__claims_delete_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li></ul><h3>Query Parameters</h3><ul><li><strong>ClaimTypes</strong>: <em>required (string )</em><p>The claim type to update</p></li></ul></div><div class="tab-pane" id="_users__userId__claims_delete_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>The claim(s) have been successfully removed</p><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem deleting the claim"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__users__userId__claims__claim_"><span class="parent">/users/{userId}/claims</span>/{claim}</a> <span class="methods"><a href="#_users__userId__claims__claim__get"><span class="badge badge_get">get</span></a> <a href="#_users__userId__claims__claim__put"><span class="badge badge_put">put</span></a> <a href="#_users__userId__claims__claim__delete"><span class="badge badge_delete">delete</span></a></span></h4></div><div id="panel__users__userId__claims__claim_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#_users__userId__claims__claim__get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Get a specific claim using the unique id</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#_users__userId__claims__claim__put'" class="list-group-item"><span class="badge badge_put">put</span><div class="method_description"><p>Update the value of this claim. The id is provided in the body</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#_users__userId__claims__claim__delete'" class="list-group-item"><span class="badge badge_delete">delete</span><div class="method_description"><p>Remove the specific claim using the unique id</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__claims__claim__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/users/{userId}/claims</span>/{claim}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get a specific claim using the unique id</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__claims__claim__get_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__claims__claim__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__claims__claim__get_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li><li><strong>claim</strong>: <em>required (string )</em></li></ul></div><div class="tab-pane" id="_users__userId__claims__claim__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>The requested claim</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+"type": "surname",
+		"value": "smith"								
+}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>The claim was not found</p><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a retrieving updating the claim"
+}
+</code></pre></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__claims__claim__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put</span> <span class="parent">/users/{userId}/claims</span>/{claim}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Update the value of this claim. The id is provided in the body</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__claims__claim__put_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__claims__claim__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__claims__claim__put_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li><li><strong>claim</strong>: <em>required (string )</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"id": "8bf84292-2ba7-4605-a77c-054a55b64092"
+}
+</code></pre></div><div class="tab-pane" id="_users__userId__claims__claim__put_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>The claims have been successfully updated.</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"id": "8bf84292-2ba7-4605-a77c-054a55b64091",
+"type": "surname",
+		"value": "smith"								
+}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><h2>HTTP status code <a href="http://httpstatus.es/422" target="_blank">422</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There were validation errors with the supplied data",
+"errorContent": [
+{
+"fieldName": "type",
+"message": "supplied value was not valid"
+}
+]}
+</code></pre><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem updating the claim"
+}
+</code></pre></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="_users__userId__claims__claim__delete"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_delete">delete</span> <span class="parent">/users/{userId}/claims</span>/{claim}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Remove the specific claim using the unique id</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_users__userId__claims__claim__delete_request" data-toggle="tab">Request</a></li><li><a href="#_users__userId__claims__claim__delete_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_users__userId__claims__claim__delete_request"><h3>URI Parameters</h3><ul><li><strong>userId</strong>: <em>required (string )</em></li><li><strong>claim</strong>: <em>required (string )</em></li></ul></div><div class="tab-pane" id="_users__userId__claims__claim__delete_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>The claim was successfully deleted</p><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>The claim was not found</p><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
+"errorMessage": "There was a problem deleting the claim"
+}
+</code></pre></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#_users">/users</a></li></ul></div></div></div></div></body></html>

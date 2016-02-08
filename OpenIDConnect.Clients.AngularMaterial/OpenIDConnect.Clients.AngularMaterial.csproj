@@ -160,6 +160,7 @@
     <Content Include="content\scripts\CallbackController.js" />
     <Content Include="content\scripts\CartoonController.js" />
     <Content Include="content\scripts\CartoonsService.js" />
+    <Content Include="content\scripts\CharacterService.js" />
     <Content Include="content\scripts\Config.js" />
     <Content Include="content\scripts\OidcService.js" />
     <Content Include="content\scripts\TopBarController.js" />
