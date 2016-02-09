@@ -20,6 +20,7 @@ using OpenIDConnect.IdentityServer.Services;
 using IdentityServer3.Core.Services;
 using OpenIDConnect.IdentityManager.Services;
 using IdentityManager;
+using OpenIDConnect.Core.Token;
 
 namespace OpenIDConnect.Host
 {
@@ -51,12 +52,21 @@ namespace OpenIDConnect.Host
         private static void RegisterApiServices(IConfigurationService configService, ContainerBuilder builder)
         {
             var usersApiUri = configService.GetSetting<string>("UsersApiUri", null);
+            var identityServerUri = configService.GetSetting<string>("IdentityServerUri", null);
 
             builder.RegisterType<UsersApiUserService>().As<IUserService>()
-                .WithParameter("usersApiUri", usersApiUri);
+                .WithParameter("usersApiUri", usersApiUri)
+                .WithParameter("identityServerUri", identityServerUri);
+
+            builder.RegisterType<X509SignedTokenProvider>()
+                .WithParameter("cert", Cert.Load(typeof(IOwinBootstrapper).Assembly, "Cert", "idsrv3test.pfx", "idsrv3test"))
+                .Named<ITokenProvider>("tokenProvider");
+
+            builder.RegisterDecorator<ITokenProvider>(p => new CachingTokenProvider(p), "tokenProvider");
 
             builder.RegisterType<UsersApiIdentityManagerService>().As<IIdentityManagerService>()
-                .WithParameter("usersApiUri", usersApiUri);
+                .WithParameter("usersApiUri", usersApiUri)
+                .WithParameter("identityServerUri", identityServerUri);
         }
 
         private static void RegisterUserStore(IConfigurationService configService, ContainerBuilder builder)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OpenIDConnect.Core.Dtos;
+using System.Collections.Generic;
 
 namespace OpenIDConnect.IdentityManager.Dtos
 {

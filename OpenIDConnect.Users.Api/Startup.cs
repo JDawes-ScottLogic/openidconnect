@@ -1,16 +1,21 @@
-﻿using Microsoft.AspNet.Builder;
+﻿using IdentityServer3.AccessTokenValidation;
+using IdentityServer3.AccessTokenValidation.Integration.AspNet;
+using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Mvc.Filters;
+using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OpenIDConnect.Users.Domain;
-using OpenIDConnect.Users.Data.AspNetIdentity.Repositories;
 using Newtonsoft.Json.Serialization;
-using Microsoft.Data.Entity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using OpenIDConnect.Users.Data.AspNetIdentity.Models;
-using System;
+using OpenIDConnect.Users.Data.AspNetIdentity.Repositories;
+using OpenIDConnect.Users.Domain;
 using OpenIDConnect.Users.Domain.Repositories;
+using Owin;
+using System;
 
 namespace OpenIDConnect.Users.Api
 {
@@ -50,6 +55,7 @@ namespace OpenIDConnect.Users.Api
         {
             loggerFactory.AddConsole(configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            loggerFactory.MinimumLevel = LogLevel.Verbose;
 
             // For more details on creating database during deployment see http://go.microsoft.com/fwlink/?LinkID=615859
             try
@@ -64,13 +70,22 @@ namespace OpenIDConnect.Users.Api
                     }
                 }
             }
-            catch (Exception exception)
+            catch (Exception)
             {
             }
 
             app.UseCors("AllowAllOrigins");         // TODO: allow collection of allowed origins per client
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
+
+            app.UseIdentityServerBearerTokenAuthentication(new IdentityServerBearerTokenAuthenticationOptions
+            {
+                Authority = "https://localhost:44333/core",
+                RequiredScopes = new[] { "api" },
+                NameClaimType = "name",
+                RoleClaimType = "role",
+            });
+
             app.UseMvc();
         }
 
@@ -85,12 +100,21 @@ namespace OpenIDConnect.Users.Api
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            var defaultPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+
             // Add framework services.
-            services.AddMvc().AddJsonOptions(options =>
-            {
-                options.SerializerSettings.ContractResolver =
-                    new CamelCasePropertyNamesContractResolver();
-            });
+            services
+                .AddMvc(setup =>
+                {
+                    setup.Filters.Add(new AuthorizeFilter(defaultPolicy));
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ContractResolver =
+                        new CamelCasePropertyNamesContractResolver();
+                });
 
             // Add CORS support
             services.AddCors(options =>

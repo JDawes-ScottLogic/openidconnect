@@ -27,12 +27,14 @@ namespace OpenIDConnect.IdentityServer
         private readonly IUserService userService;
 
         private readonly ExternalIdentityProviderService externalIdentityProviderService;
+        private readonly string identityServerUri;
 
         public IdentityServerOptionsService(
             string adminUsername,
             string adminPassword,
             string identityManagerUri,
             string identityAdminUri,
+            string identityServerUri,
             IUserService userService,
             ExternalIdentityProviderService externalIdentityProviderService)
         {
@@ -56,6 +58,11 @@ namespace OpenIDConnect.IdentityServer
                 throw new ArgumentNullException("identityAdminUri");
             }
 
+            if (string.IsNullOrWhiteSpace(identityServerUri))
+            {
+                throw new ArgumentNullException(nameof(identityServerUri));
+            }
+
             if (userService == null)
             {
                 throw new ArgumentNullException(nameof(userService));
@@ -70,6 +77,7 @@ namespace OpenIDConnect.IdentityServer
             this.adminPassword = adminPassword;
             this.identityManagerUri = identityManagerUri;
             this.identityAdminUri = identityAdminUri;
+            this.identityServerUri = identityServerUri;
             this.userService = userService;
             this.externalIdentityProviderService = externalIdentityProviderService;
         }
@@ -78,7 +86,7 @@ namespace OpenIDConnect.IdentityServer
         {
             var factory = new IdentityServerServiceFactory();
 
-            var knownClientStore = new KnownClientStore(identityManagerUri, identityAdminUri);
+            var knownClientStore = new KnownClientStore(identityManagerUri, identityAdminUri, identityServerUri);
 
             factory.ClientStore = new Registration<IClientStore>(
                 new CompositeClientStore(new IClientStore[] 
@@ -95,10 +103,10 @@ namespace OpenIDConnect.IdentityServer
                 }));
 
             factory.UserService = new Registration<IUserService>(
-                new CompositeUserService(new IUserService[] 
-                {                    
-                    new ClaimsUserService(new NullClaimsService(), userService),
-                    new KnownUserService(this.adminUsername, this.adminPassword)
+                new CompositeUserService(new IUserService[]
+                {
+                    new KnownUserService(this.adminUsername, this.adminPassword),
+                    new ClaimsUserService(new NullClaimsService(), userService)
                 }));
 
             factory.CorsPolicyService = new Registration<ICorsPolicyService>(
@@ -126,6 +134,13 @@ namespace OpenIDConnect.IdentityServer
                     {
                        new LoginPageLink { Text = "Register", Href= "localregistration"}                       
                     }
+                },
+                LoggingOptions = new LoggingOptions
+                {
+                    EnableHttpLogging = true,
+                    EnableKatanaLogging = true,
+                    EnableWebApiDiagnostics = true,
+                    WebApiDiagnosticsIsVerbose = true
                 },
                 Factory = factory
             };

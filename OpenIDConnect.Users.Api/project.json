@@ -6,6 +6,9 @@
 
   "dependencies": {
     "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
+    "IdentityModel": "2.0.0-alpha2",
+    "IdentityServer3.AccessTokenValidation": "2.6.0",
+    "IdentityServer3.AccessTokenValidation.Integration.AspNet": "1.0.0-rc1",
     "Microsoft.AspNet.Cors": "6.0.0-rc1-final",
     "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
     "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
@@ -16,6 +19,7 @@
     "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
+    "Microsoft.Net.Http": "2.2.29",
     "OpenIDConnect.Core.Api": "1.0.0-*",
     "OpenIDConnect.Users.Data.AspNetIdentity": "1.0.0-*",
     "OpenIDConnect.Users.Domain": "1.0.0-*"

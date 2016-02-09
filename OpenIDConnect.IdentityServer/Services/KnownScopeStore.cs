@@ -62,6 +62,19 @@ namespace OpenIDConnect.IdentityServer.Services
 
             yield return new Scope
             {
+                Name = "idserver",
+                DisplayName = "IdentityServer",
+                Description = "Authorization for IdentityServer",
+                Type = ScopeType.Resource,
+                Claims = new List<ScopeClaim>
+                {
+                    new ScopeClaim(IdentityServer3.Core.Constants.ClaimTypes.Name),
+                    new ScopeClaim(IdentityServer3.Core.Constants.ClaimTypes.Role),
+                }
+            };
+
+            yield return new Scope
+            {
                 Name = "api",
                 DisplayName = "API",
                 Description = "Authorization for the API",
@@ -69,6 +82,25 @@ namespace OpenIDConnect.IdentityServer.Services
                 ShowInDiscoveryDocument = true,
                 Enabled = true,
                 Required = true,
+                Claims = new List<ScopeClaim>
+                {
+                    new ScopeClaim("role")
+                }
+            };
+
+            yield return new Scope
+            {
+                Name = "usersApi",
+                DisplayName = "Users API",
+                Description = "Authorization for the Users API",
+                Type = ScopeType.Resource,
+                ShowInDiscoveryDocument = true,
+                Enabled = true,
+                Required = true,
+                ScopeSecrets = new List<Secret>
+                {
+                    new Secret("usersApi".Sha256())
+                },
                 Claims = new List<ScopeClaim>
                 {
                     new ScopeClaim("role")
