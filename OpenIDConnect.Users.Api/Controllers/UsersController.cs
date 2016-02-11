@@ -9,6 +9,7 @@ using OpenIDConnect.Core.Domain.Models;
 
 namespace OpenIDConnect.Users.Api.Controllers
 {
+    using Microsoft.AspNet.Authorization;
     using OpenIDConnect.Core.Api.Results;
 
     [Route("api/users")]

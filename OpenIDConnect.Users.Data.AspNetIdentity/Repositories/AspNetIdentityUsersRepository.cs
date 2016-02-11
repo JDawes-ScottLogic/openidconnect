@@ -35,7 +35,10 @@ namespace OpenIDConnect.Users.Data.AspNetIdentity.Repositories
         public async Task AddUser(User user)
         {
             var applicationUser = ApplicationUser.FromUser(user);
-            var result = await this.userManager.CreateAsync(applicationUser);
+
+            var result = await this.userManager.CreateAsync(applicationUser, user.Password);
+            var lockedOut = await this.userManager.IsLockedOutAsync(applicationUser);
+
             if (!result.Succeeded)
             {
                 // TODO: change to identity create exception
@@ -86,14 +89,14 @@ namespace OpenIDConnect.Users.Data.AspNetIdentity.Repositories
                 throw new ArgumentNullException(nameof(password));
             }
 
-            var user = await this.GetUserByName(userId);
+            var user = await this.userManager.FindByNameAsync(userId);
             if (user == null)
             {
-                return false;
+                throw new InvalidOperationException("Invalid username specified");
             }
 
             return await this.userManager.CheckPasswordAsync(
-                ApplicationUser.FromUser(user), 
+                user, 
                 password);
         }
 

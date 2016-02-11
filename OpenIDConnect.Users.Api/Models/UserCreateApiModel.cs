@@ -32,7 +32,8 @@ namespace OpenIDConnect.Users.Api.Models
         {
             return new User(
                 this.Username,
-                this.Username, 
+                this.Username,
+                this.Password,
                 this.Claims.Select(c => new Claim(c.Type, c.Value)));
         }
     }

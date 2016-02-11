@@ -6,38 +6,34 @@ namespace OpenIDConnect.Users.Domain.Models
 {
     public class User
     {        
-        private readonly string id;
-
-        private readonly string username;
-
         private IEnumerable<Claim> claims;
 
-        public User(string id, string username, IEnumerable<Claim> claims)
+        public User(string id, string username, string password, IEnumerable<Claim> claims)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
                 throw new ArgumentNullException(nameof(username));
             }            
 
-            this.id = id;
-            this.username = username;
+            this.Id = id;
+            this.Username = username;
+            this.Password = password;
             this.claims = claims;
         }
 
         public string Id
         {
-            get
-            {
-                return this.id;
-            }
+            get;
         }
 
         public string Username
         {
-            get
-            {
-                return this.username;
-            }
+            get;
+        }
+
+        public string Password
+        {
+            get;
         }
 
         public IEnumerable<Claim> Claims

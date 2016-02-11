@@ -37,6 +37,7 @@ namespace OpenIDConnect.Users.Data.AspNetIdentity.Models
             return new User(
                 this.Id,
                 this.UserName,
+                string.Empty,
                 this.Claims.Select(c => new Claim(c.ClaimType, c.ClaimValue)));
         }
     }

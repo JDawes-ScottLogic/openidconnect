@@ -51,6 +51,7 @@ namespace OpenIDConnect.IdentityServer
             var adminPassword = this.configService.GetSetting<string>("AdminPassword", null);
             var identityManagerUri = this.configService.GetSetting<string>("IdentityManagerUri", null);
             var identityAdminUri = this.configService.GetSetting<string>("IdentityAdminUri", null);
+            var identityServerUri = this.configService.GetSetting<string>("IdentityServerUri", null);
 
             var options =
                 new IdentityServerOptionsService(
@@ -58,6 +59,7 @@ namespace OpenIDConnect.IdentityServer
                     adminPassword, 
                     identityManagerUri, 
                     identityAdminUri,
+                    identityServerUri,
                     userService,
                     externalIdentityProviderService).GetServerOptions();
 

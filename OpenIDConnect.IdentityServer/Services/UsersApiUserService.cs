@@ -1,8 +1,12 @@
 ﻿using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services.Default;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpenIDConnect.Core.Dtos;
+using OpenIDConnect.Core.Token;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -14,15 +18,24 @@ namespace OpenIDConnect.IdentityServer.Services
     public class UsersApiUserService : UserServiceBase
     {
         private readonly string usersApiUri;
+        private readonly string identityServerUri;
+        private readonly ITokenProvider tokenProvider;
 
-        public UsersApiUserService(string usersApiUri)
+        public UsersApiUserService(ITokenProvider tokenProvider, string usersApiUri, string identityServerUri)
         {
+            if (tokenProvider == null)
+            {
+                throw new ArgumentNullException(nameof(tokenProvider));
+            }
+
+            this.tokenProvider = tokenProvider;
             this.usersApiUri = usersApiUri;
+            this.identityServerUri = identityServerUri;
         }
 
         public override async Task AuthenticateExternalAsync(ExternalAuthenticationContext context)
         {
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             {
                 if (!(await ExternalUserExistsAsync(client, context.ExternalIdentity.ProviderId)))
                 {
@@ -44,45 +57,86 @@ namespace OpenIDConnect.IdentityServer.Services
             var userName = context.UserName;
             var password = context.Password;
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
-            using (var postResult = await client.PostAsync($"/api/users/{userName}/authenticate", new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("password", password) })))
+            using (var client = await CreateClientAsync())
             {
+                using (var postResult = await client.PostAsync($"/api/users/{userName}/authenticate", new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("password", password) })))
+                {
 
-                if (postResult.IsSuccessStatusCode)
-                {
-                    var claims = await GetClaimsAsync(client, userName, Enumerable.Empty<string>());
-                    context.AuthenticateResult = new AuthenticateResult(userName, GetDisplayName(claims) ?? userName, claims);
-                }
-                else
-                {
-                    context.AuthenticateResult = new AuthenticateResult($"Could not sign in user {context.UserName}: received status code {postResult.StatusCode}");
+                    if (postResult.IsSuccessStatusCode)
+                    {
+                        var claims = await GetClaimsAsync(client, userName, Enumerable.Empty<string>());
+                        context.AuthenticateResult = new AuthenticateResult(userName, GetDisplayName(claims) ?? userName, claims);
+                    }
+                    else
+                    {
+                        context.AuthenticateResult = new AuthenticateResult($"Could not sign in user {context.UserName}: received status code {postResult.StatusCode}");
+                    }
                 }
             }
         }
 
         public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
-            var userName = context.Subject.Identity.Name;
+            var username = GetName(context.Subject);
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             {
-                context.IssuedClaims = await GetClaimsAsync(client, userName, context.RequestedClaimTypes ?? Enumerable.Empty<string>());
+                context.IssuedClaims = await GetClaimsAsync(client, username, context.RequestedClaimTypes ?? Enumerable.Empty<string>());
             }
         }
 
         public override async Task IsActiveAsync(IsActiveContext context)
         {
-            var userName = context.Subject.Identity.Name;
+            var username = GetName(context.Subject);
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             {
-                context.IsActive = await UserExistsAsync(client, userName);
+                context.IsActive = await UserExistsAsync(client, username);
             }
         }
 
         public override Task SignOutAsync(SignOutContext context)
         {
             return Task.FromResult(0);
+        }
+
+        private string GetName(ClaimsPrincipal principal)
+        {
+            var identity = principal.Identity as ClaimsIdentity;
+            return identity.Name ?? identity.Claims.First(c => c.Type == "name").Value;
+        }
+
+        private async Task<HttpClient> CreateClientAsync()
+        {
+            var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) };
+            await SetBearerTokenAsync(client);
+            return client;
+        }
+
+        private async Task SetBearerTokenAsync(HttpClient client)
+        {
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("name", "idServer"),
+                    new Claim("role", "IdentityAdminManager"),
+                    new Claim("scope", "idserver"),
+                    new Claim("scope", "api")
+                }),
+                TokenIssuerName = this.identityServerUri,
+                AppliesToAddress = this.identityServerUri + "/resources",
+            };
+
+            var jwtParams = new TokenValidationParameters
+            {
+                NameClaimType = "name",
+                RoleClaimType = "role",
+                ValidAudience = this.identityServerUri + "/resources",
+                ValidIssuer = this.identityServerUri,
+            };
+
+            client.SetBearerToken(await tokenProvider.GenerateAccessToken(tokenDescriptor, jwtParams));
         }
 
         private async Task<bool> UserExistsAsync(HttpClient client, string userName)
@@ -123,8 +177,8 @@ namespace OpenIDConnect.IdentityServer.Services
             using (var getResult = await client.GetAsync($"/api/users/{userName}/claims{queryString}"))
             {
                 var claimsString = await getResult.Content.ReadAsStringAsync();
-                var claims = JObject.Parse(claimsString).ToObject<Dictionary<string, string>>();
-                return claims.Select(kvp => new Claim(kvp.Key, kvp.Value));
+                var claims = JsonConvert.DeserializeObject<IEnumerable<ClaimDto>>(claimsString);
+                return claims?.Select(c => new Claim(c.Type, c.Value)) ?? Enumerable.Empty<Claim>();
             }
         }
 

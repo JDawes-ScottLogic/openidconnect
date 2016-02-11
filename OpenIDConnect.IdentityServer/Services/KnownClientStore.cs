@@ -13,10 +13,12 @@ namespace OpenIDConnect.IdentityServer.Services
         private readonly string identityManagerUri;
 
         private readonly string identityAdminUri;
+        private readonly string identityServerUri;
 
         public KnownClientStore(
             string identityManagerUri,
-            string identityAdminUri)
+            string identityAdminUri,
+            string identityServerUri)
         {
             if (string.IsNullOrWhiteSpace(identityManagerUri))
             {
@@ -28,8 +30,14 @@ namespace OpenIDConnect.IdentityServer.Services
                 throw new ArgumentNullException("identityAdminUri");
             }
 
+            if (string.IsNullOrWhiteSpace(identityServerUri))
+            {
+                throw new ArgumentNullException(nameof(identityServerUri));
+            }
+
             this.identityManagerUri = identityManagerUri;
             this.identityAdminUri = identityAdminUri;
+            this.identityServerUri = identityServerUri;
         }
         
         public Task<Client> FindClientByIdAsync(string clientId)
@@ -77,6 +85,28 @@ namespace OpenIDConnect.IdentityServer.Services
                         "idadmin"
                     }
             };
+
+            yield return new Client
+            {
+                Enabled = true,
+                ClientName = "IdentityServer",
+                ClientId = "idserver_client",
+                ClientSecrets = new List<Secret>
+                {
+                    new Secret("7FFF0184-9A9E-4CD8-86A3-A217567B5584".Sha256())
+                },
+                RedirectUris = new List<string>
+                    {
+                        this.identityServerUri
+                    },
+                Flow = Flows.Implicit,
+                AllowedScopes =
+                {
+                    IdentityServer3.Core.Constants.StandardScopes.OpenId,
+                    "idserver"
+                }
+            };
+
             //Our hard coded client apps
             yield return new Client
             {
@@ -129,6 +159,33 @@ namespace OpenIDConnect.IdentityServer.Services
                 },
                 RequireConsent = false
             };
+
+            yield return new Client
+            {
+                Enabled = true,
+                ClientName = "usersApi",
+                ClientId = "usersApi",
+                Flow = Flows.Implicit,
+                EnableLocalLogin = true,
+                AllowedScopes = new List<string> {
+                    IdentityServer3.Core.Constants.StandardScopes.OpenId,
+                    IdentityServer3.Core.Constants.StandardScopes.Profile,
+                    "api"
+                },
+                AccessTokenLifetime = 1200,
+                IdentityTokenLifetime = 300,
+                RedirectUris = new List<string> { "https://localhost:44353/callback" },
+                AllowedCorsOrigins = new List<string>
+                {
+                    "https://localhost:44353"
+                },
+                PostLogoutRedirectUris = new List<string>
+                {
+                    "https://localhost:44353"
+                },
+                RequireConsent = false
+            };
+
         }
     }
 }

@@ -9,16 +9,28 @@ using OpenIDConnect.IdentityManager.Dtos;
 using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
+using OpenIDConnect.Core.Token;
+using System.IdentityModel.Tokens;
+using OpenIDConnect.Core.Dtos;
 
 namespace OpenIDConnect.IdentityManager.Services
 {
     public class UsersApiIdentityManagerService : IIdentityManagerService
     {
         private readonly string usersApiUri;
+        private readonly ITokenProvider tokenProvider;
+        private readonly string identityServerUri;
 
-        public UsersApiIdentityManagerService(string usersApiUri)
+        public UsersApiIdentityManagerService(string identityServerUri, string usersApiUri, ITokenProvider tokenProvider)
         {
+            if (tokenProvider == null)
+            {
+                throw new ArgumentNullException(nameof(tokenProvider));
+            }
+
+            this.tokenProvider = tokenProvider;
             this.usersApiUri = usersApiUri;
+            this.identityServerUri = identityServerUri;
         }
 
         public Task<IdentityManagerMetadata> GetMetadataAsync()
@@ -69,7 +81,7 @@ namespace OpenIDConnect.IdentityManager.Services
                 return new IdentityManagerResult("Claim value cannot be null");
             }
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             using (var postResponse = await client.PostAsync($"/api/users/{subject}/claims", new StringContent($"[{{ type: \"{type}\", value: \"{value}\" }}]", Encoding.Unicode, "text/json")))
             {
                 if (!postResponse.IsSuccessStatusCode)
@@ -100,7 +112,7 @@ namespace OpenIDConnect.IdentityManager.Services
 
             var claimsToUpdate = new[] { new ClaimDto { Type = type, Value = value } };
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             using (var putResponse = await client.PutAsync($"/api/users/{subject}/claims", new StringContent(JsonConvert.SerializeObject(claimsToUpdate), Encoding.Unicode, "text/json")))
             {
                 if (!putResponse.IsSuccessStatusCode)
@@ -129,7 +141,7 @@ namespace OpenIDConnect.IdentityManager.Services
                 return new IdentityManagerResult("Claim value cannot be null");
             }
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             using (var deleteReponse = await client.DeleteAsync($"/api/users/{subject}/claims?claimType={type}&value={value}"))
             {
                 if (!deleteReponse.IsSuccessStatusCode)
@@ -151,7 +163,7 @@ namespace OpenIDConnect.IdentityManager.Services
             UserDto userDto;
             IEnumerable<ClaimDto> claimDtos;
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             {
                 using (var getResponse = await client.GetAsync($"/api/users/{subject}"))
                 {
@@ -193,7 +205,7 @@ namespace OpenIDConnect.IdentityManager.Services
 
             var userCreateDto = new UserCreateDto { Username = userName, Password = password, Claims = claims };
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             {
                 using (var postResponse = await client.PostAsync($"/api/users", new StringContent(JsonConvert.SerializeObject(userCreateDto), Encoding.Unicode, "text/json")))
                 {
@@ -214,7 +226,7 @@ namespace OpenIDConnect.IdentityManager.Services
                 return new IdentityManagerResult<UserDetail>("Subject not specified");
             }
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             using (var deleteResponse = await client.DeleteAsync($"/api/users/{subject}"))
             {
                 if (!deleteResponse.IsSuccessStatusCode)
@@ -246,7 +258,7 @@ namespace OpenIDConnect.IdentityManager.Services
             var queryString = string.Join("&", new[] { filterParam, page, pageSize }.Where(p => !string.IsNullOrEmpty(p)));
             queryString = string.IsNullOrEmpty(queryString) ? queryString : $"?{queryString}";
 
-            using (var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) })
+            using (var client = await CreateClientAsync())
             using (var getResponse = await client.GetAsync($"/api/users{queryString}"))
             {
                 if (!getResponse.IsSuccessStatusCode)
@@ -300,6 +312,40 @@ namespace OpenIDConnect.IdentityManager.Services
         public Task<IdentityManagerResult> SetRolePropertyAsync(string subject, string type, string value)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<HttpClient> CreateClientAsync()
+        {
+            var client = new HttpClient { BaseAddress = new Uri(this.usersApiUri) };
+            await SetBearerTokenAsync(client);
+            return client;
+        }
+
+        private async Task SetBearerTokenAsync(HttpClient client)
+        {
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("name", "idManager"),
+                    new Claim("role", "IdentityAdminManager"),
+                    new Claim("role", "IdentityManagerAdmin"),
+                    new Claim("scope", "idadmin"),
+                    new Claim("scope", "api")
+                }),
+                TokenIssuerName = this.identityServerUri,
+                AppliesToAddress = this.identityServerUri + "/resources",
+            };
+
+            var jwtParams = new TokenValidationParameters
+            {
+                NameClaimType = "name",
+                RoleClaimType = "role",
+                ValidAudience = this.identityServerUri + "/resources",
+                ValidIssuer = this.identityServerUri,
+            };
+
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + await tokenProvider.GenerateAccessToken(tokenDescriptor, jwtParams));
         }
     }
 }

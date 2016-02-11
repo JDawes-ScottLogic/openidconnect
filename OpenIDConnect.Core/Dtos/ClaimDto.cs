@@ -1,6 +1,6 @@
-﻿namespace OpenIDConnect.IdentityManager.Dtos
+﻿namespace OpenIDConnect.Core.Dtos
 {
-    class ClaimDto
+    public class ClaimDto
     {
         public string Type { get; set; }
 
